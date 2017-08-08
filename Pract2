@@ -1,0 +1,100 @@
+## crear 3 variables de 4 entradas.Las variables de nombre:
+## facultad(economia, ingenieria, arquitectura y derecho)
+## licenciaturas(actuaria,ing civil, arquitectura, derecho)
+## calificacion alumnos(6,4,10,8)
+## verificar que tipo de variables son
+## borrar las variables facultad y licenciatura
+##graficar con pie la variable calificacion
+
+facultad<- c("economia", "ingenieria", "arquitectura", "derecho")
+lic<-c("actuaria","ing civil", "arquitectura","derecho")
+calalum<-c(6,4,10,8)
+class(facultad)
+class(lic)
+class(calalum)
+
+rm(facultad)
+rm(lic)
+
+etiq<-c("economia", "ing civil","arq","derecho")
+  
+pie(calalum, etiq, main="Grafica de pie de 
+    calificaciones de alumnos", 
+    sub="Fuente: UAEMex",
+    col= c("aquamarine1","red","green","yellow"), radius=1.0,
+    clockwise= FALSE, lty=6)
+
+
+
+##VECTORES
+
+a<-2+3  #vector longitud 1
+
+b<- c(3,4) - c(6,1)  ##diferencia de vectores
+##genera un vector de 2 entradas
+b
+
+c<- c(4,5,6) * c(5,2,1) ## vector de 3 entradas
+c ##hace la operacion entrada por entrada
+
+d<-c(1:50, 7, 99)
+
+length(d) # saber la longitud de un vector
+length(c)
+
+##operaciones logicas con vectores
+
+d>= 45 ## cuantas entradas del vector son igual o mayor a 45
+d== 50
+d!= 35
+
+##sucesiones con operador y funcion 
+
+help(seq)
+
+z<-seq(0,30,3) ## seq (valor inicial(from), valor final(to), cada cuanto aumenta(by))
+z<- seq(from=1,to=30,by=3)
+seq(10)# por default empieza en uno y aumenta en 1
+seq(2,10)
+secuencia<-seq(1,10,by=1)
+secuencia1 <-seq(0,100,by=10)
+sec2<-seq(300,130,by=-3)
+sec2
+
+### muestras##
+
+ingreso<-sample(20000:50000,100)
+##sample(de que dato a que dato quieres los datos, los datos que quieres )
+##sample genera muestras aleatorias entre un rango
+
+
+(ingreso<-sample(20000:50000,100))
+## si se mete la variable en parentesis lo ejecuta y lo muestra
+
+ingreso>=40000
+
+vector1<-ingreso[ingreso>=40000]
+vector1
+
+
+aleatorios<-sample(1:10,20,replace=TRUE) ## muestra con reemplazo
+(aleatorios<-sample(1:10,20,replace=TRUE))
+
+
+##para seleccionar la posicion de un vector
+ingreso[50]
+ingreso[73]
+ingreso[30:43]
+ingreso[c(30,50,70)] ##muestra el valor de esas 3 posiciones
+ingreso[seq(20,50,10)] ##muestra el valor de las posiciones de la 20 a la 50 cada 10
+
+ingreso[ingreso>40000]
+ingreso[ingreso<22000]
+ingreso[ingreso>20000 & ingreso<30000] ##valores mayores a 20000 y menores a 30000
+## |=o, &=y
+
+##repetir##
+
+ss<-c(5,-7,9)
+rr<-rep(ss,times=5) ## rr:repetir
+rr
