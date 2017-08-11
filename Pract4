@@ -1,0 +1,122 @@
+###################### ejercicio matrices########
+##### 1) crear una matriz con la funciÃ³n dim() de 4 columnas 
+#y 5 renglones, ##esta matriz esta basada en un vector que contiene
+##estos 
+#datos 11:31 
+## el nombre de los renglones es el siguiente (toluca, 
+#pachuca, gdl, mty)
+## el nombre de las columnas es (escuela1, escuela2, escuela3, 
+#escuela4, escuela5)
+## Incorporar el nombre a los renglones y columnas de la matriz
+## identificar el dato de la escuela 3 de toluca, de la escuela 5 de gdl y la escuela 1 de pachuca
+###### 2) crear con la funciÃ³n matrix una matriz de 6 renglones
+## y 3 columnas.... y preguntar por el dato de la matriz en el 
+## renglon 3 y columna 3
+
+datos<-11:30
+datos
+dim(datos)<-c(5,4)
+View(datos)
+
+rownames(datos)<-c("escuela 1", "escuela 2", "escuela 3", "escuela 4","escuela 5")
+colnames(datos)<-c("Toluca", "Pachuca","Guadalajara","Monterrey")
+View(datos)
+
+datos["escuela 3","Toluca"]
+datos["escuela 5","Guadalajara"]
+datos["escuela 1","Pachuca"]
+
+funcion<- matrix(1:18, nrow=6, ncol=3)
+View(funcion)
+funcion[3,3]
+
+
+######################  Practica 4   ###########################
+
+### para pegar un renglon a la matriz datos##
+
+datos<-rbind(datos, c(4,5,6,7))  ## rbind pega un renglon a la matriz datos 
+datos
+
+rownames(datos)<-c("escuela 1", "escuela 2", "escuela 3", "escuela 4","escuela 5", "escuela 6")
+
+## para pegar una columna a la matriz datos
+
+datos<-cbind(datos, c(14,25,36,47,99, 81))
+datos
+colnames(datos)<-c("Toluca", "Pachuca","Guadalajara","Monterrey","Jocotitlan")
+datos
+
+
+## para editar una matriz
+
+datos["escuela 1", "Jocotitlan"]<-28  ## cambiar el valor dentro de una matriz en una posicion
+datos
+
+edit (datos)
+
+
+### para multiplicar matrices se utiliza %*%
+
+### para la transpuesta de una matriz se utiliza t t()
+
+### DATA.FRAME 
+
+nombres <-c("Sergio", "Juan", "Rocio", "Jessica")
+edad<-c(30,43,21,18)
+altura<-c(170,165,175,172)
+salario<-c(3000, 4500, 2200, 4300)
+
+basem<-data.frame(nombres, edad, altura, salario)
+basem
+
+basem[4,3]<-178  ## asigno el valor 178 a la posicion del 4 renglon 3 columna
+
+basem$salario*2.2-> basem$salario ## multiplico salario de la basem por 2.2 y los nuevos valores los vuelvo a asignar 
+## a esa misma variable de la base
+basem
+
+peso<- c(83.2, 75.2, 69.3, 70.5) ## nuevo vector(variable)
+basem<-data.frame(nombres, edad, altura, salario, peso)
+basem
+
+basem$peso*1.2-> basem$peso
+basem
+
+## redondear
+round(basem$peso,3)->basem$peso
+basem
+
+
+## incorporar nueva variable 
+basem$escol<- c("prepa","lic","ninguno","prim")
+basem
+
+basem$sexo<-c(1,1,2,2)
+basem
+
+### sacar tabla de la variable sexo
+table(basem$sexo) ### tabla de frecuencia
+
+attach(basem)  ### apartir de esta linea todas las variables y operaciones son de la basem
+table(sexo)
+
+detach(basem)  ## quitar a la basem como base que se esta usando 
+
+## instalar paqueterias desde internet
+install.packages("foreign")
+install.packages("questionr")
+install.packages("car")
+
+## la paqueteria foreign sirve para exportar o importar bases de datos
+## la paqueteria questionr es para expandir frecuencias de bases de datos muestrales
+## car es para regresion 
+
+## dentro de cada paquete vienen multiples funciones que solo las poder usar cuando
+# mandamos llamar el paquete
+
+## para mandar llamar una paqueteria instalada, es con la funcion library() y requiere() que son equivalentes
+
+library(foreign)
+library(questionr)
+require(car)
