@@ -1,0 +1,33 @@
+#### bajar base de datos
+temporal<- tempfile()
+download.file("http://www.beta.ing.org.mx/contenidos/proyectos/enchogares/regulares
+              /enoe/microdatos/enoe_15ymas/2017/2017trim1_bdf.zip",temporal)
+files= unzip(temporal, list=TRUE)$Name
+unzip(temporal, files=files[grep1("dbf",files)])
+library(foreign)
+
+#####
+require(foreign)
+mti2015<- read.dbf("C:/Users/Sala-D/Desktop/mti2015_05_17_sdem_precodificado.DBF")
+
+table(mti2015$SEX)
+install.packages("questionr")
+require(questionr)
+
+wtd.table(mti2015$SEX,weights=mti2015$FAC_MTI) ## datos expandidos del muestreo
+ls(mti2015) ## muestra la lista de todas las variables de la encuesta
+sum(mti2015$FAC_MTI) ## suma todas los valores de esa columna
+table(mti2015$R_DEF_ENOE) 
+table(mti2015$CS_P12)
+wtd.table(mti2015$CS_P12,weights=mti2015$FAC_MTI)
+
+wtd.table(mti2015$EDA,mti2015$CS_P12,weights=mti2015$FAC_MTI)
+
+## subconjuto
+edomexmuj<- subset(mti2015, mti2015$ENT==15 & mti2015$SEX==2)
+sub <- subset(mti2015, mti2015$ENT== "01" | mti2015$ENT==32) ## poner comillas si empieza en 0
+##ya que no lo reconoce por ser variable de tipo caracter
+agua<- subset(mti2015, mti2015$ENT=="01")
+table(sub$ENT)
+as.numeric(mti2015$ENT)
+class(mti2015$ENT)
