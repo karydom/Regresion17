@@ -1,0 +1,9 @@
+mti2015<- read.dbf("C:/Users/karina/Desktop/Facultad/SEPTIMO SEMESTRE/ANALISIS DE REGRESION/mti2015_05_17_sdem_precodificado.DBF")
+
+mti2015$ENT<-as.numeric(mti2015$ENT)
+class(mti2015$ENT)
+
+edomexmuj<- subset(mti2015, mti2015$ENT==15 & mti2015$SEX==2)
+sub <- subset(mti2015, mti2015$ENT==01 | mti2015$ENT==32) 
+agua<- subset(mti2015,mti2015$ENT==01)
+table(sub$ENT)
