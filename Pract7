@@ -1,0 +1,75 @@
+## bajar base de datos ##
+
+temporal<- tempfile()
+
+download.file("http://www.beta.inegi.org.mx/contenidos/proyectos/enchogares/modulos/mti/2015/microdatos/mti2015_bases_conapo_dbf.zip",temporal)
+
+files= unzip(temporal, list=TRUE)$Name
+
+unzip(temporal, files=files[grepl("dbf",files)])
+
+library(foreign)
+files
+mti15<-data.frame(read.dbf("mti2015_05_17_sdem_precodificado.DBF"))
+class(mti15$ENT)
+
+mti15$ENT<-as.numeric(mti15$ENT)
+class(mti15$ENT)
+
+### etiquetar una variable ###
+
+table(mti15$CS_P15)
+
+mti15$CS_P15<- factor(mti15$CS_P15,levels = c(1,2,3,4),labels = c("primaria","secundaria","preparatoria","no sabe"))  #etiquetar una variable
+
+table(mti15$RAMA)
+mti15$RAMA<- factor(mti15$RAMA,levels = c(1,2,3,4,5,6,7),
+                    labels = c("agropecuario","construccion","industria manufacturera","comercio","servicios","otros","no especificado"))
+
+### recodificar variables
+
+#Metodo 1
+# se crea una nueva variable para no perder datos, en este caso es rama 2
+
+
+mti15$RAMA2[mti15$RAMA==1]<-1
+mti15$RAMA2[mti15$RAMA==2 | mti15$RAMA==3]<-2
+mti15$RAMA2[mti15$RAMA==4 | mti15$RAMA==5]<-3
+mti15$RAMA2[mti15$RAMA==6 | mti15$RAMA==7]<-4
+
+table(mti15$RAMA2)
+
+table(mti15$EDA)
+
+
+#ejercicio#
+#recodificar la variable EDA en una nueva variable que se llame GPOEDA y etiquetarla.
+#esta recodificacion debe quedar en 4 lineas del scribt
+#Una vez que hayan realizado el ejercicio generar una tabla con datos expandidos y 
+#exportarla a excel
+
+
+mti15$GPOEDA[mti15$EDA=="05" | mti15$EDA=="06" | mti15$EDA=="07"]<- 1
+mti15$GPOEDA[mti15$EDA=="08" | mti15$EDA=="09" | mti15$EDA==10 | mti15$EDA==11]<- 2
+mti15$GPOEDA[mti15$EDA==12 | mti15$EDA==13 | mti15$EDA==14]<- 3
+mti15$GPOEDA[mti15$EDA==15 | mti15$EDA==16 | mti15$EDA==17]<- 4
+
+table(mti15$GPOEDA)
+
+mti15$GPOEDA<- factor(mti15$GPOEDA,levels = c(1,2,3,4),labels = c("niños","pre ado","adolescente","joven"))
+table(mti15$GPOEDA)
+
+install.packages("questionr")
+require(questionr)
+wtd.table(mti2015$GPOEDA,weights=mti2015$FAC_MTI)
+
+mti15$EDA<- as.numeric(as.character(mti15$EDA))
+
+mti15$GPOEDA[mti15$EDA >=5 & mti15$EDA<=7]<- 1
+mti15$GPOEDA[mti15$EDA >=8 & mti15$EDA<=11]<-2
+mti15$GPOEDA[mti15$EDA >=12 & mti15$EDA<=14]<-3
+mti15$GPOEDA[mti15$EDA >=15 & mti15$EDA<=17]<-4
+
+t<- wtd.table(mti2015$GPOEDA,weights=mti2015$FAC_MTI)
+t
+write.csv(t,file="practica.csv")  ## exportar el archivo a excel
