@@ -1,0 +1,31 @@
+#ejercicio#
+#recodificar la variable EDA en una nueva variable que se llame GPOEDA y etiquetarla.
+#esta recodificacion debe quedar en 4 lineas del scribt
+#Una vez que hayan realizado el ejercicio generar una tabla con datos expandidos y 
+#exportarla a excel
+#Grafica la variable GPOEDA con una grafica de barras y exportala en PDF
+
+mti15$GPOEDA[mti15$EDA=="05" | mti15$EDA=="06" | mti15$EDA=="07"]<- 1
+mti15$GPOEDA[mti15$EDA=="08" | mti15$EDA=="09" | mti15$EDA=="10" | mti15$EDA=="11"]<- 2
+mti15$GPOEDA[mti15$EDA=="12" | mti15$EDA=="13" | mti15$EDA=="14"]<- 3
+mti15$GPOEDA[mti15$EDA=="15" | mti15$EDA=="16" | mti15$EDA=="17"]<- 4
+
+table(mti15$GPOEDA)
+
+mti15$GPOEDA<- factor(mti15$GPOEDA,levels = c(1,2,3,4),labels = c("niños","pre ado","adolescente","joven"))
+table(mti15$GPOEDA)
+
+require(questionr)
+
+t<- wtd.table(mti15$GPOEDA,weights=mti15$FAC_MTI)
+t<-t/1000000
+
+## grafica de barras##
+
+grafeda<-barplot(t, width = 1, space = NULL, names.arg = NULL,legend.text =rownames(t),
+                  beside = TRUE, horiz = FALSE,
+                 col = c("blueviolet","cornflowerblue","firebrick1"
+                 ,"hotpink1"), border = par("fg"),
+                 main ="Trabajo infantil", sub = " Grupos de edades de niños que trabajan con datos expandidos", xlab ="Grupo de edades", ylab = "Frecuencia(en millones)",
+                 xlim = c(0,8), ylim=NULL,
+                 axes = TRUE, axisnames = TRUE, plot = TRUE)
