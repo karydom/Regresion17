@@ -1,0 +1,9 @@
+## Relacion entre horas de estudio y calificaciones finales
+#variable independiente = horas de estudio
+#variable dependiente = calificaciones
+
+horas<-c(20,16,34,23,27,32,18,22,30,26)
+calif<-c(64,61,84,70,88,92,72,77,80,82)
+
+plot(horas,calif,main="Relación entre horas
+     de estudio y calificaciones finales",col="blue")
