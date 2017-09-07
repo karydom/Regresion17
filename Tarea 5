@@ -1,0 +1,17 @@
+x<-c(59,63,68,72,74,78,83)
+y<-c(118,183,247,208,197,135,132)
+
+correlacion<-cor(x,y)
+mediay<-mean(y)
+mediax<-mean(x)
+desvx<-sd(x)
+desvy<-sd(y)
+
+beta1<-correlacion*(desvy/desvx)
+beta0<-mediay-(beta1*mediax)
+
+beta1
+beta0
+
+correlacion2<-cor(y,x)
+coef<-lm(y~x)
