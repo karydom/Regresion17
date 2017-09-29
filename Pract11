@@ -1,0 +1,50 @@
+#### ejercicio clase ####
+# se busca la relacion de estatura (x) con la longitud de salto (Y)
+
+x<-c(170,172,173,174,174,175,176,177,180,180,180,180,180,181,181,182,182,182,182,184,184,185,186,188)
+y<-c(.84,1.31,1.42,1.03,1.07,1.08,1.04,1.8,1.45,1.60,1.61,2.13,2.15,.84,1.43,.90,1.81,1.94,2.68,1.49,2.52,3.00,1.87,3.08)
+
+#1)determine la ec de la recta de regresion estimada
+#2)calcule una estimacion puntual del salto horizontal promedio cuando la estatura de la persona es 182
+#3)calcule los valores de los residuos de min cuadrados de las 4 observaciones con las cuales la estatura es de 182
+#4)que proporcion de la variacion observada en el salto horizontal es atribuido a la relacion de regresion lineal simple?
+
+x2<-x^2
+xy<-x*y
+
+sxx<-(sum(x2))-(((sum(x))^2)/24)
+sxx
+
+sxy<-sum(xy)-((sum(x)*sum(y))/24)
+sxy
+
+b1<-sxy/sxx
+b1
+
+bo<-mean(y)-(b1*mean(x))
+bo
+
+#2)
+y1<-bo+(b1*(182))
+y1
+
+#3)
+r1<-.90-y1
+r2<-1.82-y1
+r3<-1.92-y1
+r4<-2.68-y1
+
+#4)
+y2<-bo+(b1*(x))
+
+rt<-y-y2
+rt2<-rt^2
+rt3<-sum(rt2)
+s2<-rt3/22
+
+#coeficiente de determinacion
+#rt3=sse
+
+sst<-(sum(y^2))-(((sum(y))^2)/24)
+
+coe=1-(rt3/sst)
