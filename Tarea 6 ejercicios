@@ -1,0 +1,263 @@
+#### ejercicio 01 ####
+#el articulo incluye una grafica de dispersion junto con una recta de minimos cuadrados, 
+#de x=volumen de precipitacion pluvial y y=volumen de escurrimiento en un lugar particular.
+
+x<-c(5,12,14,17,23,30,40,47,55,67,72,81,96,112,127)
+y<-c(4,10,13,15,15,25,27,46,38,46,53,70,82,99,100)
+
+#a)¿será que una grafica de dispersion de los datos apoya el uso del modelo de regresion lineal simple?
+
+mdl1<- lm(y~x)
+summary(mdl1)
+
+plot(y~x,xlab="volumen de precipitacion pluvial", ylab="Pvolumen de escurrimiento" ,xlim=c(5,127), ylim=c(4,100), main="Diagrama de Dispersion")
+abline(mdl1)
+
+#si, ya que en la grafica de dispersion se puede observar que tan exacto es la regresion lineal simple de acuerdo a los datos que se nos presentan
+
+#b)calcule las estimaciones puntuales de la pendiente y la intercepcion de la recta de regresion de poblacion
+bo<-mdl1$coefficients[1] #intercepcion Bo
+b1<-mdl1$coefficients[-1]  #B1
+
+y1<-bo+(b1*(x)) #recta estimada de regresion
+
+#c) calcule una estimacion puntual del volumen de escurrimiento promedio verdadero
+#cuando el volumen de precipitacion pluvial es de 50
+
+y1<-bo+(b1*(50))
+
+#d)calcule una estimacion puntual de la desviacion estandar sigma
+
+y2<-bo+(b1*(x))
+
+residuos<-y-y2
+res2<-residuos^2
+sse<-sum(res2)
+s2<-sse/13
+s<-sqrt(s2)
+
+#e) ¿que proporcion de la variacion observada del volumen de escurrimiento puede atribuirse
+#a la relacion de regresion lineal simple entre el escurrimiento y la precipitacion pluvial?
+
+sst<-(sum(y^2))-(((sum(y))^2)/15)
+
+coe=1-(sse/sst)
+
+#97.52% de la variacion observada del volumen de escurrimiento puede atribuirse
+#a la relacion de regresion lineal simple que relaciona el escurrimiento y la precipitacion pluvial.
+
+
+
+##### EJERCICIO 02 #####
+# El agregado fino de concreto, hecho a partir de un agregado secundario clasificado de manera uniforme
+# y una paste de cemento-agua, es bebeficico en las zonas propensas a las lluvias excesivas debido a sus 
+# excelentes propiedades de drenaje. El articulo "Pvement Thickness Desing for no-fines concret parckin 
+# lots" empleo un analisis de minimos cuadrados en el estudio de como y= porosidad (%) se relaciona con
+# x=peso unitario (por ft cubico) en muestras de concreto. Considere los siguientes datos representativos
+
+x<-c(99, 101.1, 102.7, 103, 105.4, 107, 108.7, 110.8, 112.1, 112.4, 113.6, 113.8, 115.1, 115.2, 120)
+y<- c(28.8, 27.9, 27, 25.2, 22.8, 21.5, 20.9, 19.6, 17.1, 18.9, 16, 16.7, 13, 13.6, 10.7)
+
+# a) Obtenga la recta de la ecuaci??n estimada. A continuacion cree un grafico de dispersion de los datos
+#    y el grafico de la recta estimada. ??Sera que el modelo de la relaci??n puede explicar una gran parte 
+#    de la variaci??n observada en "y"?
+
+mdlo1<- lm(y~x)
+summary(mdlo1)
+
+plot(y~x,xlab="Peso", ylab="Porosidad" ,xlim=c(99,120), ylim=c(10,29), main="Gr??fica de Diagrama de Dispersi??n")
+abline(mdlo1)
+
+# b) Interprete la pendente de la recta de minimos cuadrados
+
+# Por cada unidad que se incrementa en el peso del concreto la porosidad disminuye en 0.90849 unidades.
+
+# c) ??que sucede si la estimacion linela se utiliza para predecir la porosidad cuando el peso unitario es
+#    de 135?. ??Por que esto no es una buena idea?
+
+(yest<- mdlo1$coefficients[1]+mdlo1$coefficients[2]*135)
+#No es buena idea debido a que la estimaci??n sale del rango en la cual se hace la regresion linel.
+
+# d) Calcule los residuos correspondientes de las dos primeras observaciones
+y_est1<-mdlo1$coefficients[1]+mdlo1$coefficients[2]*x
+(res1 <-y[1]-y_est1[1])
+(res2 <-y[2]-y_est1[2])
+resi<- y-y_est1
+
+# e) Calcule e interprete una estimacion puntual de sigma
+sse<- sum(resi^2)
+(sig<- sse/(length(x)-2))
+# Si sigma es un valor peque??o como en este caso, podemos decir que los puntos observados son muy cercanos
+# a la recta de regresion
+
+# f) ??que proporcion de la variacion obsevada en la porosidad se puede atribuir a las relaci??n lineal aprox
+#    entre el peso unitario y la porosidad?
+
+# El modelo tiene un 97.34% de variacion observda en en la porosidad es atribuible a la regresion lineal
+# que relaciona el peso unitario con la porosidad. R-Cuadrada
+
+
+
+##### EJERCICIO 03 #####
+#18)Articulo"Experimental Study of Recycled Rubber-Filled High-Strength Concrete"
+#y=esfuerzo axial(MPa)en
+#x=esfuerzo cúbico (Mpa)
+x<-c(112.3,97.0,92.7,86.0,102.0,99.2,95.8,103.5,89.0,86.7)
+y<-c(75.0,71.0,57.7,48.7,74.3,73.3,68.0,59.3,57.8,48.5)
+#a)Obtenga la ecuación de la recta de mínimos cuadrados e interprete su pendiente 
+ec <- lm(y~x) 
+summary (ec)
+ec$coefficients
+ec$coefficients[1] 
+ec$coefficients[-1]
+
+
+x1<- x^2
+Sxy <-((sum(x*y))-((sum(x)*sum(y))/length(x)))
+Sxx <- (sum(x1)-(((sum(x))^2)/length(x)))
+B1 <- Sxy/Sxx
+mediax <- mean(x)
+mediay <- mean(y)
+B0 <-mediay-B1*mediax
+B1
+B0
+
+#b)Calcule e interprete el coeficiente de determinación
+yp <- B0+B1*x
+resid<-y-yp
+SSE <- sum(resid^2)
+SSE
+SST<- (sum(y^2))-(((sum(y))^2)/length(y))
+SST
+r2<-1-(SSE/SST)
+r2
+#Se presenta una variación del 63% en el esfuerzo axial 
+#c)Calcule e interprete una estimación de la desviación estándar del error en el modelo de regresión lineal simple
+desv<- (SSE/(length(x)-2))^(1/2)
+desv
+#Se presenta una dispersión de 6.624762 entre los valores observados de al rededor de la recta de regresión,
+# por lo que se observa que no estan tan alejados de la recta
+
+plot(y~x,main="Experimental Study of Recycled Rubber-Filled
+     High-Strength Concrete", xlab="Esfuerzo cúbico (Mpa)", ylab="Esfuerzo cúbico (Mpa)",xlim=c(85,115), ylim=c(45,80))
+abline(ec,col="green")
+
+
+
+##### EJERCICIO 04 #####
+#Los siguentes datos son representativos de reportos en el articulo 
+#An Experimental Correlation of Oxides od Nitrogen Emission from Power Boilers
+#Based on Field Data con x= tasa de liberacion debido a area quemador(MBtu/h-pie2)
+# y y=tasa de emision de NO(ppm)
+x<-c(100,125,125,150,150,200,200,250,250,300,300,350,400,400)
+y<-c(150,140,180,210,190,320,280,400,430,440,390,600,610,670)
+
+#a) Suponiendo el modelo de regresion lineal simple valido obtenga la estimacion 
+# de minimos cuadrados de la recta de regresion verdadera
+ec <- lm(y~x)
+summary (ec)
+b0<-ec$coefficients[1] 
+b1<-ec$coefficients[-1]
+
+#b)Cual es la estimacion de la tasa de No Emision, especificada cuando la tasa
+# de liberacion debida al area del quemador es igual a 225
+
+yp <- b0+(b1*225)
+yp
+
+#c) Estime la cantidad en la cual se espera que cambie la tasa de Emision de N0
+# Cuando la tasa de liberacion debido al area del quemador disminuye 50 
+
+r1<-b0+(b1*150)
+r2<-b0+(b1*100)
+res<-r2-r1
+res
+
+#d)¿Utilizaria la recta de regresion estimada para predecir la tasa de emision 
+# con una tasa de liberacion de 500? ¿Por que si? o por que no ? 
+
+valores<-b0+(b1*x)
+valores
+
+val4<-b0+(b1*500)
+val4
+
+plot(y~x,main="An experimental Correlation of Oxides of Nitrogen Emission from Power",
+     xlab="Tasa de liberacion debido al area de Quemador ", ylab="Tasa de Emision de No (ppm)",xlim=c(100,400), ylim=c(100,700))
+abline(ec,col="green")
+
+# Si, ya que la recta de regresion es positiva, donde a mayor tasa de liberacion 
+# del quemador mayor tasa de emision, a si mismo al graficar la relacion existente
+# poder observar que la recta se ajusta lo suficiente a los puntos de la regresion 
+# ademas de que el 96.09 de las variaciones observadas en la liberacion del area 
+# del quemador es atribuido a la reg. lineal que relaciona la liberacion del area 
+# del quemador con la tasa de emsion de NO
+
+
+
+#### ejercicio 05 ####
+#un aspecto de particular interes fue si y= densidad de la colonia esta relacionada con
+#x=area superficial de la roca.A continuacion se presentan los datos representativos
+
+x<-c(50,71,55,50,33,58,79,26,69,44,37,70,20,45,49)
+y<-c(152,1929,48,22,2,5,35,7,269,38,171,13,43,185,25)
+
+#a) ajuste el modelo de regresion lineal simple a estos datos, prediga la densidad de la colonia cuando el area superficial
+#sea igual a 70 y cuando sea igual a 71 y calcule los residuos correspondientes 
+#¿como se comparan entre si?
+
+mdl1<- lm(y~x)
+summary(mdl1)
+
+bo<-mdl1$coefficients[1]
+bi<-mdl1$coefficients[-1]
+
+y1<-bo+(bi*(70))
+y2<-bo+(bi*(71))
+
+res1<-13-y1
+res2<-1929-y2
+
+#existe una gran variacion entre el valor observado y el valor estimado 
+
+#b) calcule e interprete el coeficiente de determinacion
+
+y3<-bo+(bi*(x))
+
+rt<-y-y3
+rt2<-rt^2
+sse<-sum(rt2)
+s2<-sse/13
+
+sst<-(sum(y^2))-(((sum(y))^2)/15)
+
+coe=1-(sse/sst)
+
+# el coeficiente de determinacion nos indica que el 12.37% de la variacion observada es atribuible a la regresion lineal simple
+
+#c) la segunda observacion tiene un valor y muy extremo. elimine y vuelva a calcular la 
+# ecuacion de la recta de regresion estimada.¿será que difiere sustancialmente de la ecuacion
+# antes de la eliminacion? ¿cual es el impacto en r2 y en s?
+
+xm<-c(50,55,50,33,58,79,26,69,44,37,70,20,45,49)
+ym<-c(152,48,22,2,5,35,7,269,38,171,13,43,185,25)
+
+mdl2<- lm(ym~xm)
+summary(mdl2)
+
+bo2<-mdl2$coefficients[1]
+bi2<-mdl2$coefficients[-1]
+
+ym3<-bo2+(bi2*(xm))
+
+rtm<-ym-ym3
+rtm2<-rtm^2
+ssem<-sum(rtm2)
+s2m<-ssem/12
+
+sstm<-(sum(ym^2))-(((sum(ym))^2)/14)
+
+coem=1-(ssem/sstm)
+
+# al ser eliminado el valor más grande de x existe un cambio en la ecuacion estimada
+#sin embargo el coeficiente de determinacion se redujo a un 2.38% que es menor que el que obtenia al mantener todos los datos observados.
