@@ -1,0 +1,78 @@
+#### ejercicio clase ####
+
+esta<-c(1.2,1.23,1.19,1.32,1.28,1.22,1.17,1.29,1.33,1.15)
+eco<-c(110,130,108,167,156,115,104,138,170,107)
+
+mod1<-lm(esta~eco)
+
+### Bondad de ajuste ###
+#con la bondad de ajuste verificamos la calidad del modelo al interpretar la var dependiente
+#para eso se utiliza la tabla ANOVA
+
+anova(mod1)
+
+#en este caso la variabilidad explicada del modelo es .033022 = SSM
+#se revisa la SSR= .0031
+#revisando los valores del sumary el estadistico F es mayor a 1 y 
+#p-value <.05 con estas revisiones se puede mencionar que se rechaza la hipotesis nula de 
+#F=1 y se puede establecer un modelo 
+
+#Revisar R2 multiple
+summary(mod1)
+
+#alrededor del 91.32% de la variabilidad de la estatura es explicada por la recta ajustada
+
+summary (mod1)$coefficients
+
+#esta =.9323 + .0023 eco
+
+## Analisis de los coeficientes ##
+
+#Bo es .93 y B1 es .0023, si la variable ingreso incrementa en un peso la estatura del
+#niño incremente .0023
+
+## Diagnostico del modelo
+
+base1<-data.frame(eco,esta)
+base1$fitted.mod1 <- fitted(mod1) ## valores ajustados
+base1$residuals.mod1 <- residuals(mod1)  ## residuos del modelo
+base1$rstudent.mod1 <- rstudent(mod1)  ## residuos estudentizados
+
+## estas variables se utilizan para comprobar los supuestos...
+#Supuesto de normalidad ... es que los residuos tengan una distribucion normal
+#para conocer la normalidad se utiliza la prueba de Shapiro para analizar los residuos
+
+shapiro.test(base1$rstudent.mod1)
+
+#la prueba de hipotesis Shapiro test
+#Ho: la muestra tiene una distribucion normal
+#H1: la muestra no tiene una dist. normal
+# EL p-value tiene que ser mayor a .05 para que se acepte Ho
+##Tenemos un p-value de 0.8172 no se rechaza la hipotesis nula, por lo tanto se 
+#acepta que hay normalidad.
+
+#Ahora veremos este resultado en un grafico
+
+x11()
+
+qqnorm(base1$rstudent.mod1,main="Normal(0,1)") # grafica de normalidad
+qqline(base1$rstudent.mod1)
+
+#Ahora vamos a revisar la homogeneidad de varianzas
+#Para la homogeneidad se requiere de una libreria que se llama intest, debido a que esta se
+#tiene que aplicar la prueba de Brunch-Pagan
+
+install.packages("Intest")
+require (Intest)
+bptest(mod1)
+
+#En esta prueba esperamos que haya homogeneidad de la varianza
+#Para eso tenemos que tener un p-value mayor a .05 por lo que para mod1 se puede decir que
+#hay homogeneidad en la variable
+
+## Prueba de autocorrelacion o independencia
+#en este caso se utiliza la prueba de Durbin-Watson
+
+dwtest (mod1, alternative="two.sided")
+ #en este caso al igual que las demas se acepta hipotesis nula debido a que tenemos
+#un p-value mayor a .05, esto quiere decir que no hay autocorrelacion en los residuos
