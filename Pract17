@@ -1,0 +1,72 @@
+#### swiss ####
+
+#medicion estandarizada de la fecundidad e indicadores socioeconomicos para cada una de las 
+#47 provincias francesas hablandes de Suiza alrededor de 1888
+library(help="datasets")
+require(stats)
+base<-data.frame(swiss)
+
+#analisis exploratorio
+names(base)
+pairs(base)
+cor(base)
+
+#propuesta modelo de regresion multiple con base en el analisis exploratorio
+regresion1<-lm(Infant.Mortality~Fertility,data=base)
+
+#modelo propuesto anteriormente
+nulo<-lm(Fertility~1,data=base)  #modelo con 1 constante, permite saber si es el mejor modelo
+#es una referencia. se utiliza para saber si las var indep tienen relacion con la var dep.
+completo<-lm(Fertility~.,data=base) #el punto significa involucrar todas las variables indep
+step(nulo,scope=list(lower=nulo,upper=completo),direction = "forward") #step permite calcular
+#los AIC para saber que variables no aportan en el modelo
+#el primer argumento es el modelo nulo ya que es el más simple, scope permite evaluar todos
+#los modelos que hay entre el nulo y el completo
+summary(completo)
+help(step)
+summary(nulo)
+completo
+regresion1
+
+
+
+#### ejercicio ####
+#Mediciones de calidad del aire en Nueva York
+
+library(help="datasets")
+require(stats)
+base<-data.frame(airquality)
+na.omit(base)
+base1<-na.omit(base)
+
+#analisis exploratorio
+names(base1)
+pairs(base1)
+cor(base1)
+
+#propuesta modelo de regresion multiple con base en el analisis exploratorio
+regresion1<-lm(Ozone~Temp,data=base1)
+
+#En nuestro modelo, la variable dep sera Ozone y las indep todas las demás.
+
+nulo<-lm(Ozone~1,data=base1) 
+completo<-lm(Ozone~.,data=base1) 
+step(nulo,scope=list(lower=nulo,upper=completo),direction = "forward") 
+
+#de acuerdo al analisis de step, el mejor modelo es:
+mdl1<-lm(Ozone~Temp+wind+Solar.R+Month,data=base1)
+
+#ya que al analizar todos los modelos posibles entre el modelo nulo y el modelo completo
+#este modelo es el que presento el menor AIC con un valor de 679.71
+
+#El modelo completo tiene un AIC de 680.21 mientras que el modelo nulo tiene un AIC de 
+#779.07
+
+summary(mdl1)
+
+#dentro del modelo que nos arrojo step tenemos un error estandar residual de 20.9 que es un error alto
+#tambien observamos la r ajustada (por mrm) que tenemos una r ajustada de .60, lo que explica
+#60 por ciento de la variabilidad 
+#observamos que tenemos un estadistico F como un buen valor y p value menor a .05 que 
+#implica que este modelo es mejor que el modelo basico
+help(step)
