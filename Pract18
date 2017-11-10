@@ -1,0 +1,123 @@
+#### clase ####
+
+#medicion estandarizada de la fecundidad e indicadores socioeconomicos para cada una de las 
+#47 provincias francesas hablandes de Suiza alrededor de 1888
+library(help="datasets")
+require(stats)
+base<-data.frame(swiss)
+
+#analisis exploratorio
+names(base)
+pairs(base)
+cor(base)
+
+#propuesta modelo de regresion multiple con base en el analisis exploratorio
+regresion1<-lm(Infant.Mortality~Fertility,data=base)
+
+#modelo propuesto anteriormente
+nulo<-lm(Fertility~1,data=base)  #modelo con 1 constante, permite saber si es el mejor modelo
+#es una referencia. se utiliza para saber si las var indep tienen relacion con la var dep.
+completo<-lm(Fertility~.,data=base) #el punto significa involucrar todas las variables indep
+step(nulo,scope=list(lower=nulo,upper=completo),direction = "forward") #step permite calcular
+#los AIC para saber que variables no aportan en el modelo
+#el primer argumento es el modelo nulo ya que es el más simple, scope permite evaluar todos
+#los modelos que hay entre el nulo y el completo
+
+modl1<-lm(formula = Fertility ~ Education + Catholic + Infant.Mortality + 
+            Agriculture, data = base)
+
+summary(modl1)
+
+#con la finalidad de observar aspectos basicos como la r cuadrada ajustada que nos permite 
+#conocer la variabilidad explicada del modelo, los errores de residuos al estandar 7.168,
+#la significancioa de las variables todas son significativas
+#el estadistico F y el pavalue para ver el ajusto del modelo
+#La prueba de hipotesis que se aplica en el estadistico F es:
+#Si tenemos un pvalue menor a .05 se rechaza la hipotesis nula 
+#Ho=B0,B1,B2,... Bk=0
+#H1= al menos un Bj es diferente de cero
+#aqui esperamos rechazar la hipotesis nula por lo que el valor p.value debe ser <.05 y ademas
+#el estadistico F debe ser mayor a 1 
+
+### PRUEBAS FORMALES DE LOS SUPUESTO
+## 
+shapiro.test(rstudent(modl1)) ### prueba shapiro para normalidad, se espera no rechazar la
+#hipotesis nula un pvalue mayor a .05
+#aqui observamos un p value de .48 por lo que podemos mencionar que no rechazamos la 
+#hipotesis nula, es decir, los errores se distribuyen normal 
+
+require(lmtest)
+bptest(modl1) #prueba breush pagan que permite ver la autocorrelacion 
+#aqui esperamos no rechazar la hipotesis nula, es decir un p-value mayor  a .05, este
+#modelo nos permite saber que no hay mas de dos variables que aporten lo mismo al modelo
+# en este caso tenemos un p-value de .53 por lo que no rechazamos  la hip nula
+#se puede decir que este modelo si cumple el supuesto de autocorrelacion
+
+dwtest(modl1,alternative="two.sided") # prueba independencia 
+# p-value mayor a .05 o un valor de DW entre 1.5 y 2.5
+
+### Interpretacion de coeficientes
+
+#el modelo elegido estima que hay una disminucion de 0.15 en la tasa de fecundidad por 
+#cada aumento de 1% de hombres involucrados en la agricultura manteniendo constantes las
+#var restantes.
+
+#el modelo elegido estima que hay una disminucion de 0.98 en la tasa de fecundidad por 
+#cada aumento de 1% de la educacion manteniendo constantes las var restantes.
+
+#el modelo elegido estima que hay un incremento de 0.12 en la tasa de fecundidad por 
+#cada aumento de 1% de la poblacion catolica  manteniendo constantes las var restantes.
+
+#el modelo elegido estima que hay una un incremento de 1.07 en la tasa de fecundidad por 
+#cada aumento de 1% de mortalidad infantil manteniendo constantes las var restantes.
+
+
+
+#### EJERCICIO ####
+base<-data.frame(Seatbelts)
+
+#analisis exploratorio
+names(base)
+pairs(base)
+cor(base)
+
+nulo<-lm(drivers~1,data=base)  #modelo con 1 constante, permite saber si es el mejor modelo
+#es una referencia. se utiliza para saber si las var indep tienen relacion con la var dep.
+completo<-lm(drivers~.,data=base) #el punto significa involucrar todas las variables indep
+step(nulo,scope=list(lower=nulo,upper=completo),direction = "forward") #step permite calcular
+#los AIC para saber que variables no aportan en el modelo
+#el primer argumento es el modelo nulo ya que es el más simple, scope permite evaluar todos
+#los modelos que hay entre el nulo y el completo
+
+modl1<-lm(formula = drivers ~ DriversKilled + front + rear + law + VanKilled, data = base)
+
+summary(modl1)
+
+#con la finalidad de observar aspectos basicos como la r cuadrada ajustada que nos permite 
+#conocer la variabilidad explicada del modelo, los errores de residuos al estandar 103,
+#el estadistico F y el pavalue para ver el ajusto del modelo
+#La prueba de hipotesis que se aplica en el estadistico F es:
+#Si tenemos un pvalue menor a .05 se rechaza la hipotesis nula 
+#Ho=B0,B1,B2,... Bk=0
+#H1= al menos un Bj es diferente de cero
+#aqui esperamos rechazar la hipotesis nula por lo que el valor p.value debe ser <.05 y ademas
+#el estadistico F debe ser mayor a 1 
+#en este modelo el p-value es menor a .05 y el estadistico F es mayor a 1
+
+
+### PRUEBAS FORMALES DE LOS SUPUESTO
+## 
+shapiro.test(rstudent(modl1)) ### prueba shapiro para normalidad, se espera no rechazar la
+#hipotesis nula un pvalue mayor a .05
+#aqui observamos un p value de .99 por lo que podemos mencionar que no rechazamos la 
+#hipotesis nula, es decir, los errores se distribuyen normal 
+
+require(lmtest)
+bptest(modl1) #prueba breush pagan que permite ver la autocorrelacion 
+#aqui esperamos no rechazar la hipotesis nula, es decir un p-value mayor  a .05, este
+#modelo nos permite saber que no hay mas de dos variables que aporten lo mismo al modelo
+# en este caso tenemos un p-value de ..029 por lo que rechazamos  la hip nula
+#se puede decir que este modelo no cumple el supuesto de autocorrelacion
+
+dwtest(modl1,alternative="two.sided") # prueba independencia 
+# p-value mayor a .05 o un valor de DW entre 1.5 y 2.5
