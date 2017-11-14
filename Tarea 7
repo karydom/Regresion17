@@ -1,0 +1,40 @@
+library(help="datasets")
+require(datasets); data("USJudgeRatings"); 
+basef <- data.frame(USJudgeRatings)
+names(basef)
+pairs(basef)   
+cor(basef) 
+
+nulof<- lm(PREP ~ 1, data = basef)  
+summary(nulof)
+completof <- lm(PREP ~ ., data = basef) 
+step(nulof,scope = list(lower=nulof, upper= completof), direction = "forward")
+summary(completof)
+
+modm<-lm(PREP ~ FAMI + DILG , data = USJudgeRatings)
+summary(modm)
+
+# PRUEBAS
+shapiro.test(rstudent(modm))
+# aqui observamos un p-value de .8059, por lo que podemos mencionar que no rechazamos la H0
+# es decir, concluimos que los errores se distribuyen normalmente.
+install.packages("lmtest")
+require(lmtest)
+bptest(modm)
+# En este caso tenemos un p-value de .06482 por lo que no rechazamos Ho
+#se puede decir que este modelo si cumple el supuesto de autocorrelacion
+
+dwtest (modm, alternative = "two.sided")
+# prueba independencia 
+# p-value mayor a .05 o un valor de DW entre 1.5 y 2.5
+#En este caso se obtiene un p-value de 0.54 y un DW de 2.18 por lo que se acepta
+#la dependencia
+
+
+### Interpretacion de coeficientes
+
+#el modelo elegido estima que hay un incremento de 0.63 en PREP por 
+#cada aumento de 1% de FAM manteniendo constantes las var restantes.
+
+#el modelo elegido estima que hay una un incremento de .39 en PREP por 
+#cada aumento de 1% de DIG  manteniendo constantes las var restantes.
