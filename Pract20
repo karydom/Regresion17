@@ -1,0 +1,140 @@
+## tasa de respiracion
+
+tasa<-c(71,53,55,48,69,84,21,68,68)
+potasio<-c(388,258,292,205,449,331,114,580,622)
+zinc<-c(2414,10693,11682,12560,2464,2607,16205,2005,1825)
+
+estudio<-data.frame(tasa,potasio,zinc)
+pairs(estudio)
+cor(estudio)
+
+nulo<-lm(tasa~1,data=estudio)  
+completo<-lm(tasa~.,data=estudio) 
+step(nulo,scope=list(lower=nulo,upper=completo),direction = "forward") 
+
+
+modl<-lm(tasa ~ zinc, data = estudio)
+summary(modl)
+# las variables dentro del modelo son sifnificativas
+#modelo aceptable 
+
+
+## limites para predecir
+limestudio<-seq(min(estudio$zinc), max(estudio$zinc), length=9)
+limestudio<-data.frame (limestudio)
+limestudio
+limestud<-predict.lm(completo,limestudio,interval="prediction",se.fit = TRUE, data=estudio)
+head(limestud$fit)  ## te generaran los limites
+
+#para dibujar los limites
+matplot(limestudio,limestud$fit,type = "l")
+
+## estimacion puntual (predicciones)
+#newdata=data.frame()
+#names(estudio)
+
+predict(completo, data.frame(zinc=10000, potasio=40), interval = "predict")
+
+
+
+
+#### Ejercicio 1 ####
+#ritmo cardiaco personas con diabetes
+
+peso<-c(74,92,63,58,78,85,85,73,62,80,72,74)
+altura<-c(168,196,170,175,162,169,190,186,176,170,176,179)
+ritmo<-c(62,75,60,71,66,62,79,74,70,66,71,69)
+edad<-c(25,31,29,64,44,41,37,35,34,29,19,50)
+
+estudio<-data.frame(peso,altura,ritmo,edad)
+pairs(estudio)
+cor(estudio)
+
+nulo<-lm(ritmo~1,data=estudio)  
+completo<-lm(ritmo~.,data=estudio) 
+
+limestudio1<-seq(min(estudio$peso), max(estudio$peso), length=12)
+limestudio2<-seq(min(estudio$altura), max(estudio$altura), length=12)
+limestudio3<-seq(min(estudio$edad), max(estudio$edad), length=12)
+
+limestudio<-data.frame (limestudio1,limestudio2,limestudio3)
+limestudio
+limestud<-predict.lm(completo,limestudio,interval="prediction",se.fit = TRUE, data=estudio)
+head(limestud$fit)  ## te generaran los limites
+
+#para dibujar los limites
+matplot(limestudio,limestud$fit,type = "l")
+
+## estimacion puntual (predicciones)
+#newdata=data.frame()
+#names(estudio)
+
+predict(completo, data.frame(peso=60, altura=190, edad=61), interval = "predict")
+
+
+
+
+
+#Ejercicio 2
+#Analisis de entrega de productos
+#se utiliza tiempo de var dep para decirle a los clientes cuanto va a tardar en llegar 
+#el producto
+#saben que las var que impactan en el tiempo se entrega son la distancia y el # de cajas
+
+ncajas<-c(10,15,10,20,25,18,12,14,16,22,24,17,13,30,24)
+distancia<-c(30,25,40,18,22,31,26,34,29,37,20,25,27,23,33)
+tiempo<-c(24,27,29,31,25,33,26,28,31,39,33,30,25,42,40)
+
+estudio<-data.frame(ncajas,distancia,tiempo)
+pairs(estudio)
+cor(estudio)
+
+nulo<-lm(tiempo~1,data=estudio)  
+completo<-lm(tiempo~.,data=estudio) 
+step(nulo,scope=list(lower=nulo,upper=completo),direction = "forward") 
+
+
+modl<-lm(tiempo ~ ncajas + distancia, data = estudio)
+summary(modl)
+
+##comprobacion de modelos
+
+shapiro.test(rstudent(modl))
+#aqui observamos un p value de .00000198 por lo que podemos mencionar que rechazamos la 
+#hipotesis nula, es decir, los errores no se distribuyen normal 
+
+install.packages("lmtest")
+require(lmtest)
+bptest(modl) #prueba breush pagan que permite ver la autocorrelacion 
+#aqui esperamos no rechazar la hipotesis nula, es decir un p-value mayor  a .05, este
+#modelo nos permite saber que no hay mas de dos variables que aporten lo mismo al modelo
+# en este caso tenemos un p-value de .2669 por lo que no rechazamos  la hip nula
+#se puede decir que este modelo si cumple el supuesto de autocorrelacion
+
+dwtest(modl,alternative="two.sided") # prueba independencia 
+# p-value mayor a .05 o un valor de DW entre 1.5 y 2.5
+#en este caso se obtuvo un p-value de .2072 y un DW de 2.61 por lo que pasa la prueba de independencia
+
+
+#ecuacion del modelo
+#y=2.3112 +.8772x1 + .4559x2
+
+## no pasa normalidad por lo que hay que revisar
+
+install.packages("car")
+require (car)
+outlierTest (completo, cutoff=.05, n.max=5, order=T)
+influencePlot(completo, id.n=5)
+# la observacion 5 indica problemas
+#ahora para confirmar  los casas que tienen implicaciones en el modelo se aplica al grafico
+#de distancias de cook
+
+cmod2<-cooks.distance(completo)
+cmod2
+#etique<-rownames(ejer)
+install.packages("faraway")
+require(faraway)
+halfnorm(cmod2, ylab = "dist cook")
+#aqui esperariamos un dato mayor a 1 para comprobar que si es atipico
+#el numero más alto es el 5 por lo que ahora una solucion es eliminarlo y volver a aplicar
+#el shapiro test
