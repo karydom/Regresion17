@@ -1,0 +1,62 @@
+#Ejercicio
+#AP= precio promedio
+#CPC= consumo por cliente
+
+city<-c("Ama","Bor","Dalh","Sham","Roya","Texa","Corpus Cristi","Palestine","Marshall",
+        "Lowa","Palo","Millsap","Memphis","Granger","Llano","Brown","Mercedes","Karnes",
+        "Mathis","La Pryor")
+AP<-c(30,31,37,42,43,45,50,54,54,57,58,58,60,73,88,89,92,97,100,102)
+CPC<-c(134,112,136,109,105,87,56,43,77,35,65,56,58,55,49,39,36,46,40,42)
+prima<-c(200,205,198,315,211,310,200,306,245,287,298,264,255,306,315,222,244,158,166,216)
+
+#Generen 3 modelos con los datos anteriores
+## 1.- Para cada modelo, encuentre el valor de R2 y AIC y genere una grafica residual
+## Comente sobre la adecuación de los tres modelos 
+
+
+estudio<-data.frame(city,AP,CPC,prima)
+pairs(estudio)
+cor(estudio)
+
+nulo<-lm(AP~1,data=estudio[,-1])
+completo<-lm(AP~.,data=estudio[,-1]) 
+step(nulo,scope=list(lower=nulo,upper=completo),direction = "forward") 
+
+#Modelo 1
+modelo1<-lm(AP ~ CPC + prima, data = estudio[, -1])
+summary(modelo1)
+#AIC=107.41
+#R2=0.6663
+modelo1$residuals.modelo1 <- residuals(modelo1)  ## residuos del modelo, se requiere un modelo con grafica de residuos dispersa
+plot(modelo1$residuals.modelo1)
+
+
+#Modelo2
+modelo2<-lm(AP ~ CPC, data = estudio[, -1])
+summary(modelo2)
+#AIC=110.01
+#R2=0.6033
+modelo2$residuals.modelo2 <- residuals(modelo2)  ## residuos del modelo
+plot(modelo2$residuals.modelo2)
+
+#Modelo 3
+modelo3<-lm(AP ~ prima, data = estudio[, -1])
+summary(modelo3)
+#AIC=187.78
+#R2=-.02649
+modelo3$residuals.modelo3 <- residuals(modelo3)  ## residuos del modelo
+plot(modelo3$residuals.modelo3)
+AIC(modelo3)
+
+
+#Mejor modelo: modelo1<-lm(AP ~ CPC + prima, data = estudio[, -1])
+
+## 2.- Para valores de 40,60,80,100 y 120 de CPC, calcule el AP
+#Utilizando el mejor modelo de los 3 anteriores
+
+predict(modelo2, data.frame(CPC=40), interval = "predict")
+predict(modelo2, data.frame(CPC=60), interval = "predict")
+predict(modelo2, data.frame(CPC=80), interval = "predict")
+predict(modelo2, data.frame(CPC=100), interval = "predict")
+predict(modelo2, data.frame(CPC=120), interval = "predict")
+
