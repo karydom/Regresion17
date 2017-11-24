@@ -1,0 +1,96 @@
+#Ejercicio 2
+#Analisis de entrega de productos
+#se utiliza tiempo de var dep para decirle a los clientes cuanto va a tardar en llegar 
+#el producto
+#saben que las var que impactan en el tiempo se entrega son la distancia y el # de cajas
+#eliminar de la muestra el dato 5
+
+ncajas<-c(10,15,10,20,25,18,12,14,16,22,24,17,13,30,24)
+distancia<-c(30,25,40,18,22,31,26,34,29,37,20,25,27,23,33)
+tiempo<-c(24,27,29,31,25,33,26,28,31,39,33,30,25,42,40)
+
+estudio<-data.frame(ncajas,distancia,tiempo)
+pairs(estudio)
+cor(estudio)
+
+nulo<-lm(tiempo~1,data=estudio)  
+completo<-lm(tiempo~.,data=estudio) 
+step(nulo,scope=list(lower=nulo,upper=completo),direction = "forward") 
+
+
+modl<-lm(tiempo ~ ncajas + distancia, data = estudio)
+summary(modl)
+
+##comprobacion de modelos
+
+shapiro.test(rstudent(modl))
+#aqui observamos un p value de .00000198 por lo que podemos mencionar que rechazamos la 
+#hipotesis nula, es decir, los errores no se distribuyen normal 
+
+install.packages("lmtest")
+require(lmtest)
+bptest(modl) #prueba breush pagan que permite ver la autocorrelacion 
+#aqui esperamos no rechazar la hipotesis nula, es decir un p-value mayor  a .05, este
+#modelo nos permite saber que no hay mas de dos variables que aporten lo mismo al modelo
+# en este caso tenemos un p-value de .2669 por lo que no rechazamos  la hip nula
+#se puede decir que este modelo si cumple el supuesto de autocorrelacion
+
+dwtest(modl,alternative="two.sided") # prueba independencia 
+# p-value mayor a .05 o un valor de DW entre 1.5 y 2.5
+#en este caso se obtuvo un p-value de .2072 y un DW de 2.61 por lo que pasa la prueba de independencia
+
+
+#ecuacion del modelo
+#y=2.3112 +.8772x1 + .4559x2
+
+## no pasa normalidad por lo que hay que revisar
+
+install.packages("car")
+require (car)
+outlierTest (completo, cutoff=.05, n.max=5, order=T)
+influencePlot(completo, id.n=5)
+# la observacion 5 indica problemas
+#ahora para confirmar  los casas que tienen implicaciones en el modelo se aplica al grafico
+#de distancias de cook
+
+cmod2<-cooks.distance(completo)
+cmod2
+#etique<-rownames(ejer)
+install.packages("faraway")
+require(faraway)
+halfnorm(cmod2, ylab = "dist cook")
+#aqui esperariamos un dato mayor a 1 para comprobar que si es atipico
+#el numero más alto es el 5 por lo que ahora una solucion es eliminarlo y volver a aplicar
+#el shapiro test
+
+estudio1<-estudio[-5,]
+nulo1<-lm(tiempo~1,data=estudio1)  
+completo1<-lm(tiempo~.,data=estudio1) 
+step(nulo1,scope=list(lower=nulo1,upper=completo1),direction = "forward") 
+
+
+modl<-lm(tiempo ~ ncajas + distancia, data = estudio1)
+summary(modl)
+
+##comprobacion de modelos
+
+shapiro.test(rstudent(modl))
+#aqui observamos un p value de .1944 por lo que podemos mencionar que no rechazamos la 
+#hipotesis nula, es decir, los errores se distribuyen normal 
+
+install.packages("lmtest")
+require(lmtest)
+bptest(modl) #prueba breush pagan que permite ver la autocorrelacion 
+#aqui esperamos no rechazar la hipotesis nula, es decir un p-value mayor  a .05, este
+#modelo nos permite saber que no hay mas de dos variables que aporten lo mismo al modelo
+# en este caso tenemos un p-value de .595 por lo que no rechazamos  la hip nula
+#se puede decir que este modelo si cumple el supuesto de autocorrelacion
+
+dwtest(modl,alternative="two.sided") # prueba independencia 
+# p-value mayor a .05 o un valor de DW entre 1.5 y 2.5
+#en este caso se obtuvo un p-value de .1644 y un DW de 2.651 por lo que pasa la prueba de independencia
+
+#ecuacion del modelo
+#y=2.91517 +1.00314x1 + .38045x2
+
+
