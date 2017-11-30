@@ -1,0 +1,56 @@
+require (foreign)
+base<-read.spss("G:/solorural.sav")
+base<-data.frame(base)
+
+#var depend: para la que trabaja (T_PER)
+# 1.- Familiar
+# 2.- No familiar
+# 3.- Cuenta propia
+# 0.- No sabe (borrar variable)
+
+#var indep:
+#1) sexo (SEX)
+#1.-hombre
+#2.-mujer
+
+#2)Grupo de edades (EDA1)
+#1.- 5 a 9 
+#2.- 10 a 13
+#3.- 14 a 17
+
+
+#3)jefe del hogar(SEX_JEFE)
+#1.-Hombre
+#2.-mujer
+
+#4)tamaño hogar (TAM_HOG)
+#1.- 1 a 3 personas
+#2.- 4 a 5 personas
+#3.- 6 a 7 personas
+#4.- 8 y más personas
+
+#5)ocupacion jefe hogar (OCU_JEFE)
+#1.- ocupado 
+#2.- desocupado
+
+#6) tipo de apoyo recibido (T_APO1)
+#1.- Beca para estudiar 
+#2.- programa gobierno
+#3.- ayuda familiar
+#4.- otro tipo de ayuda
+#5.- no recibe
+
+#Categoria de referencia es con lo que se va a contrastar, va a ser la posicion 1 de cada
+#variable 
+base2<-data.frame(base$t_per, base$sex, base$eda1,base$sex_jefe,base$tam_hog,base$ocu_jefe,base$t_apo1)
+base2<-na.omit(base2)
+table (base2$base.t_per)
+
+base3<-subset(base2,base2$base.t_per==1 | base2$base.t_per==2 | base2$base.t_per==3)
+
+require (nnet)
+
+regresion<- multinom(base3$base.t_per ~ base3$base.sex + base3$base.eda1 + base3$base.sex_jefe+ base3$base.tam_hog + base3$base.ocu_jefe + base3$base.t_apo1)
+summary(regresion)
+
+
